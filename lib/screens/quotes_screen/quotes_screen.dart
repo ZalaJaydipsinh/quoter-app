@@ -1,9 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:quoter/constant.dart';
-import 'package:quoter/main.dart';
 import 'package:quoter/services/auth.dart';
+import 'package:quoter/services/category_service.dart';
+import 'package:quoter/services/database_services.dart';
 import 'package:quoter/widget/custom_dialog.dart';
 
 class QuoteScreen extends StatefulWidget {
@@ -18,23 +17,50 @@ class QuoteScreen extends StatefulWidget {
 }
 
 class _QuoteScreenState extends State<QuoteScreen> {
+  late UserQuoteDatabaseService userQuoteDatabaseService;
+
+  @override
+  void initState() {
+    userQuoteDatabaseService =
+        UserQuoteDatabaseService(uid: widget.auth.currentUser!.uid);
+    // CategoryService().insertCategory("Zala");
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Quotes"),
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () async {
-            try {
-              await widget.auth.signOut();
-            } catch (e) {
-              print(e);
-            }
-          },
-          icon: Icon(Icons.logout),
-        ),
-      ),
+          title: const Text("Quotes"),
+          centerTitle: true,
+          leading: IconButton(
+            onPressed: () async {
+              try {
+                await widget.auth.signOut();
+              } catch (e) {
+                print(e);
+              }
+            },
+            icon: const Icon(Icons.logout),
+          ),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () async {
+                try {
+                  // userQuoteDatabaseService.insertQuote(
+                  //     "Don't talk show me your code!",
+                  //     "Jay Chauhan",
+                  //     ["Coding"],
+                  //     DateTime.now());
+
+                } catch (e) {
+                  print("ERROR: $e");
+                }
+              },
+              icon: Icon(Icons.add),
+            )
+          ]),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: ListView(

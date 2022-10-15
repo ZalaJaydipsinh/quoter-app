@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:quoter/screens/quotes_screen/quotes_screen.dart';
 import 'package:quoter/services/auth.dart';
+import 'screens/text_recognition_screen/text_recognition_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,13 +21,13 @@ class MyApp extends StatelessWidget {
       title: 'Quoter',
       theme: ThemeData.dark(),
       darkTheme: ThemeData.dark(),
-      // home: const TextRecognition(),
+      home: const TextRecognition(),
       // home: const QuoteScreen(),
-      home: Scaffold(
-        body: Wrapper(
-          auth: Auth(),
-        ),
-      ),
+      // home: Scaffold(
+      //   body: Wrapper(
+      //     auth: Auth(),
+      //   ),
+      // ),
     );
   }
 }
@@ -56,8 +57,10 @@ class Wrapper extends StatelessWidget {
                     print("ERROR $e");
                   }
                 },
-                color: Colors.greenAccent,
-                child: Text("Google Login"),
+                color: Colors.deepPurpleAccent,
+                child: const Text(
+                  "Google Login",
+                ),
               ),
             );
           } else {

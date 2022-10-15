@@ -11,13 +11,38 @@ class UserQuoteDatabaseService {
   Future insertDummyUserData(String name) async {
     return await usersCollection.doc(uid).set({
       'name': name,
+      'totalQuotes': 1,
       'quote': FieldValue.arrayUnion([
         {
           "text": "Simplisity is also a fasion but everyone can't afford it.",
           "author": "APJ Abdul Kalam",
-          "category": "life-style, favorite",
+          "category": ["life-style", "favorite"],
+          'date': DateTime.now(),
         }
       ]),
+    });
+  }
+
+  Future updateTotalQuotes(int totalQuotes) async {
+    return await usersCollection.doc(uid).update({
+      'totalQuotes': totalQuotes,
+    });
+  }
+
+  Future insertQuote(
+      String quote, String author, List<String> category, DateTime date) async {
+    List newListToBeStored = [];
+    newListToBeStored.add({
+      "text": quote,
+      "author": author,
+      "category": category,
+      'date': DateTime.now(),
+    });
+    usersCollection.doc(uid).get().then((snapshot) {
+      updateTotalQuotes(snapshot['totalQuotes'] + 1);
+    });
+    return await usersCollection.doc(uid).update({
+      'quote': FieldValue.arrayUnion(newListToBeStored),
     });
   }
 }

@@ -1,8 +1,11 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
 import 'components/input_field.dart';
+import 'components/category_chip.dart';
+import 'package:quoter/services/category_service.dart';
 
 class TextRecognition extends StatefulWidget {
   const TextRecognition({Key? key}) : super(key: key);
@@ -11,8 +14,13 @@ class TextRecognition extends StatefulWidget {
   State<TextRecognition> createState() => _TextRecognitionState();
 }
 
+List<String> dropdown_categories = <String>['Select Category'];
+
 class _TextRecognitionState extends State<TextRecognition> {
   bool textScanning = false;
+
+  String dropdownValue = dropdown_categories.first;
+  Map<int, String> categories = {1: "Motivation", 2: "Study"};
 
   XFile? imageFile;
 
@@ -21,12 +29,32 @@ class _TextRecognitionState extends State<TextRecognition> {
 
   String scannedText = "";
 
+  void deleteCategory(int id) {
+    categories.remove(id);
+  }
+
+  void addToCategoryChip() {
+    FirebaseFirestore.instance
+        .collection("category")
+        .doc("allCategory")
+        .get()
+        .then((value) {
+      int length = value["totalCategory"];
+      print(length);
+      for (int i = 0; i < length; i++) {
+        print(value["category"][i]);
+        dropdown_categories.add(value["category"][i]);
+      }
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Text("Text Recognition example"),
+        title: const Text("Quote Extract"),
       ),
       body: Center(
           child: SingleChildScrollView(
@@ -143,6 +171,47 @@ class _TextRecognitionState extends State<TextRecognition> {
                   focusedBorder: myfocusborder(), //focused border
                   // set more border style like disabledBorder
                 )),
+                Wrap(
+                  children: categories.entries
+                      .map((e) => category_chip(
+                            label: e.value,
+                            id: e.key,
+                            deleteChip: () {
+                              setState(() {
+                                deleteCategory(e.key);
+                              });
+                            },
+                          ))
+                      .toList(),
+                ),
+                // category_chip(),
+                const SizedBox(
+                  height: 20,
+                ),
+                DropdownButton<String>(
+                  value: dropdownValue,
+                  icon: const Icon(Icons.arrow_drop_down),
+                  elevation: 16,
+                  style: const TextStyle(color: Colors.grey),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.yellowAccent,
+                  ),
+                  onChanged: (String? value) {
+                    // This is called when the user selects an item.
+                    setState(() {
+                      dropdownValue = value!;
+                      categories.addAll({categories.length: value.toString()});
+                    });
+                  },
+                  items: dropdown_categories
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
                 Directionality(
                     textDirection: TextDirection.rtl,
                     child: TextButton.icon(
@@ -195,5 +264,6 @@ class _TextRecognitionState extends State<TextRecognition> {
   @override
   void initState() {
     super.initState();
+    addToCategoryChip();
   }
 }
