@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quoter/screens/quotes_screen/quotes_screen.dart';
 import 'package:quoter/services/auth.dart';
 import 'components/input_field.dart';
 import 'components/category_chip.dart';
@@ -64,6 +65,17 @@ class _TextRecognitionState extends State<TextRecognition> {
       appBar: AppBar(
         centerTitle: true,
         title: const Text("Quote Extract"),
+        actions: [
+          IconButton(
+              onPressed: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                QuoteScreen(auth: widget.auth)))
+                  },
+              icon: Icon(Icons.format_quote)),
+        ],
       ),
       body: Center(
         child: SingleChildScrollView(
@@ -214,9 +226,11 @@ class _TextRecognitionState extends State<TextRecognition> {
                     // This is called when the user selects an item.
                     setState(() {
                       dropdownValue = value!;
-                      int dd_index = dropdown_categories.indexOf(value);
+                      int dd_index = dropdown_categories.indexOf(dropdownValue);
                       if (dd_index > 0) {
-                        categories.addAll({dd_index: value.toString()});
+                        dd_index--;
+                        print("dd_index:: $dd_index");
+                        categories.addAll({dd_index: dropdownValue.toString()});
                       }
                     });
                   },
@@ -240,6 +254,11 @@ class _TextRecognitionState extends State<TextRecognition> {
                         categories.keys.toList(),
                         DateTime.now(),
                       );
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  QuoteScreen(auth: widget.auth)));
                     },
                     icon: Icon(Icons.save_rounded),
                     label: const Text(

@@ -136,12 +136,12 @@ class _QuoteScreenState extends State<QuoteScreen> {
                   (documentData['quote'] as List)
                       .map((itemDetail) => itemDetail as Map<String, dynamic>)
                       .toList();
-              var itemDetailsListReversed = itemDetailList.reversed.toList();
+              var itemDetailsListReversed = itemDetailList.toList();
 
               fetchDataAndNavigate(int length) {
                 FirebaseFirestore.instance
                     .collection("category")
-                    .doc("allCategory")
+                    .doc(widget.auth.currentUser!.uid)
                     .get()
                     .then((value) {
                   final length = value["totalCategory"];
@@ -151,11 +151,11 @@ class _QuoteScreenState extends State<QuoteScreen> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => DisplayQuoteList(
-                        itemLength: itemDetailsListReversed.length,
-                        item: itemDetailsListReversed,
-                        // categoryIndex: category,
-                        fullCategory: fullCategory,
-                      ),
+                          itemLength: itemDetailsListReversed.length,
+                          item: itemDetailsListReversed,
+                          // categoryIndex: category,
+                          fullCategory: fullCategory,
+                          auth: widget.auth),
                     ),
                   );
                 });

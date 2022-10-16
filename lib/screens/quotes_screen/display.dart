@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quoter/screens/quotes_screen/components/quote_list_tile.dart';
+import 'package:quoter/services/auth.dart';
 
 class DisplayQuoteList extends StatelessWidget {
   const DisplayQuoteList({
@@ -7,8 +8,11 @@ class DisplayQuoteList extends StatelessWidget {
     required this.itemLength,
     required this.item,
     required this.fullCategory,
+    required this.auth,
   }) : super(key: key);
   final int itemLength;
+  final AuthBase auth;
+
   final List<Map<String, dynamic>> item;
   final List<dynamic> fullCategory;
   // final List<int> categoryIndex;
@@ -31,6 +35,8 @@ class DisplayQuoteList extends StatelessWidget {
                     categories: item[index]["category"],
                     fullCategory: fullCategory,
                     colorIndex: 0,
+                    indexOfQuote: index,
+                    auth: auth,
                   );
                 },
               ),

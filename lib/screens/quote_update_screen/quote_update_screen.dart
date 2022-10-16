@@ -7,7 +7,19 @@ import 'components/category_chip.dart';
 
 class UpdateQuote extends StatefulWidget {
   final AuthBase auth;
-  const UpdateQuote({Key? key, required this.auth}) : super(key: key);
+  final String quoteText;
+  final String quoteAuthor;
+  final Map<int, String> quoteCategory;
+  final int indexOfQuote;
+
+  const UpdateQuote(
+      {Key? key,
+      required this.auth,
+      required this.quoteAuthor,
+      required this.quoteText,
+      required this.indexOfQuote,
+      required this.quoteCategory})
+      : super(key: key);
 
   @override
   State<UpdateQuote> createState() => _UpdateQuoteState();
@@ -27,16 +39,18 @@ class _UpdateQuoteState extends State<UpdateQuote> {
   }
 
   void addToCategoryChip() {
+    dropdown_categories.clear();
+    dropdown_categories.add("Select Category");
     FirebaseFirestore.instance
         .collection("category")
-        .doc("allCategory")
+        .doc(widget.auth.currentUser!.uid)
         .get()
         .then((value) {
       int length = value["totalCategory"];
-      print(length);
+      //print(length);
       for (int i = 0; i < length; i++) {
-        print(value["category"][i]);
-        print("Hello");
+        //print(value["category"][i]);
+        //print("Hello");
         dropdown_categories.add(value["category"][i]);
       }
       setState(() {});
@@ -47,6 +61,10 @@ class _UpdateQuoteState extends State<UpdateQuote> {
   void initState() {
     super.initState();
     addToCategoryChip();
+    quoteController.text = widget.quoteText;
+    authorController.text = widget.quoteAuthor;
+    categories = widget.quoteCategory;
+    print("e index 6e: ${widget.indexOfQuote}");
   }
 
   @override
@@ -124,9 +142,11 @@ class _UpdateQuoteState extends State<UpdateQuote> {
                     // This is called when the user selects an item.
                     setState(() {
                       dropdownValue = value!;
-                      int dd_index = dropdown_categories.indexOf(value);
+                      int dd_index = dropdown_categories.indexOf(dropdownValue);
                       if (dd_index > 0) {
-                        categories.addAll({dd_index: value.toString()});
+                        dd_index--;
+                        print("dd_index:: $dd_index");
+                        categories.addAll({dd_index: dropdownValue.toString()});
                       }
                     });
                   },
@@ -142,18 +162,16 @@ class _UpdateQuoteState extends State<UpdateQuote> {
                   textDirection: TextDirection.rtl,
                   child: TextButton.icon(
                     onPressed: () {
-                      UserQuoteDatabaseService(
-                              uid: widget.auth.currentUser!.uid)
-                          .insertQuote(
-                        quoteController.text.trim(),
-                        authorController.text.trim(),
-                        categories.keys.toList(),
-                        DateTime.now(),
-                      );
+                      updatePerticularQuote(
+                          widget.auth.currentUser!.uid,
+                          quoteController.text,
+                          authorController.text,
+                          categories,
+                          widget.indexOfQuote);
                     },
                     icon: Icon(Icons.save_rounded),
                     label: const Text(
-                      "Save",
+                      "Update",
                     ),
                   ),
                 ),
@@ -163,5 +181,47 @@ class _UpdateQuoteState extends State<UpdateQuote> {
         ),
       ),
     );
+  }
+
+  Future updatePerticularQuote(String uid, String quoteText, String quoteAuthor,
+      Map<int, String> quoteCategory, int indexToPass) async {
+    print("HERE WE GO $indexToPass");
+    return await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        .then((snapshot) {
+      final retrievedAuthor = snapshot.data()!['quote'][indexToPass]['author'];
+      final retrievedCategory =
+          snapshot.data()!['quote'][indexToPass]['category'];
+      final retrievedDate = snapshot.data()!['quote'][indexToPass]['date'];
+      final retrievedText = snapshot.data()!['quote'][indexToPass]['text'];
+
+      // print("ERROR!!! " + retrievedAuthor + retrievedText);
+      // print(retrievedDate.toString());
+      // print(retrievedCategory.toString());
+      List updatedListToBeStored = [], listToBeDeleted = [];
+      updatedListToBeStored.add({
+        "author": quoteAuthor,
+        "category": quoteCategory.keys.toList(),
+        "date": DateTime.now(),
+        "text": quoteText,
+      });
+      listToBeDeleted.add({
+        "author": retrievedAuthor,
+        "category": retrievedCategory,
+        "date": retrievedDate,
+        "text": retrievedText,
+      });
+      FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'quote': FieldValue.arrayUnion(updatedListToBeStored),
+      });
+
+      FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'quote': FieldValue.arrayRemove(listToBeDeleted),
+      });
+
+      print("Updated...");
+    });
   }
 }

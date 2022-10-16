@@ -1,22 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:quoter/constant.dart';
+import 'package:quoter/screens/quote_update_screen/quote_update_screen.dart';
+import 'package:quoter/services/auth.dart';
 import 'package:quoter/widget/custom_dialog.dart';
 import 'package:quoter/widget/full_screen_dialog.dart';
 
 class CustomQuoteListTile extends StatefulWidget {
-  const CustomQuoteListTile({
-    Key? key,
-    required this.quoteText,
-    required this.author,
-    required this.colorIndex,
-    required this.categories,
-    required this.fullCategory,
-  }) : super(key: key);
+  const CustomQuoteListTile(
+      {Key? key,
+      required this.quoteText,
+      required this.author,
+      required this.colorIndex,
+      required this.categories,
+      required this.fullCategory,
+      required this.indexOfQuote,
+      required this.auth})
+      : super(key: key);
   final String quoteText;
+  final AuthBase auth;
   final String author;
   final int colorIndex;
   final List categories;
   final List fullCategory;
+  final int indexOfQuote;
   @override
   State<CustomQuoteListTile> createState() => _CustomQuoteListTileState();
 }
@@ -155,13 +161,16 @@ class _CustomQuoteListTileState extends State<CustomQuoteListTile> {
 
   String finalResultToBePrinted = "";
   List<String> res = [];
+  Map<int, String> categoriesMap = {};
+
   @override
   void initState() {
     super.initState();
     for (int i = 0; i < widget.categories.length; i++) {
       int index = widget.categories[i];
       finalResultToBePrinted += ("${widget.fullCategory[index]}" +
-          (widget.categories.length != index ? ", " : ""));
+          (widget.categories.length - 1 != i ? ", " : ""));
+      categoriesMap.addAll({index: widget.fullCategory[index]});
       res.add(widget.fullCategory[index]);
     }
   }
@@ -263,7 +272,22 @@ class _CustomQuoteListTileState extends State<CustomQuoteListTile> {
                           ),
                           const SizedBox(width: 8.0),
                           CustomButtonQuoteTile(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => UpdateQuote(
+                                          auth: widget.auth,
+                                          quoteAuthor: widget.author,
+                                          quoteText: widget.quoteText,
+                                          quoteCategory: categoriesMap,
+                                          indexOfQuote: widget.indexOfQuote,
+                                        )),
+                              );
+                              print("q: ${widget.quoteText}");
+                              print("q: ${widget.author}");
+                              print("q: $res");
+                            },
                             icon: Icons.edit_rounded,
                           ),
                         ],

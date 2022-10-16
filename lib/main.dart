@@ -22,20 +22,20 @@ class MyApp extends StatelessWidget {
       title: 'Quoter',
       theme: ThemeData.dark(),
       darkTheme: ThemeData.dark(),
-      // home: TextRecognition(
-      //   auth: Auth(),
-      // ),
+      home: TextRecognition(
+        auth: Auth(),
+      ),
       // home: UpdateQuote(
       //   auth: Auth(),
       // ),
       // home: QuoteScreen(
       //   auth: Auth(),
       // ),
-      home: Scaffold(
-        body: Wrapper(
-          auth: Auth(),
-        ),
-      ),
+      // home: Scaffold(
+      //   body: Wrapper(
+      //     auth: Auth(),
+      //   ),
+      // ),
     );
   }
 }
