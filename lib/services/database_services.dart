@@ -16,7 +16,7 @@ class UserQuoteDatabaseService {
         {
           "text": "Simplisity is also a fasion but everyone can't afford it.",
           "author": "APJ Abdul Kalam",
-          "category": ["life-style", "favorite"],
+          "category": [0, 2],
           'date': DateTime.now(),
         }
       ]),
@@ -30,7 +30,7 @@ class UserQuoteDatabaseService {
   }
 
   Future insertQuote(
-      String quote, String author, List<String> category, DateTime date) async {
+      String quote, String author, List<int> category, DateTime date) async {
     List newListToBeStored = [];
     newListToBeStored.add({
       "text": quote,

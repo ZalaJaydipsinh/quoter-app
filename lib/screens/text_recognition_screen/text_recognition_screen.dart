@@ -3,12 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:quoter/services/auth.dart';
 import 'components/input_field.dart';
 import 'components/category_chip.dart';
 import 'package:quoter/services/category_service.dart';
+import 'package:quoter/services/database_services.dart';
 
 class TextRecognition extends StatefulWidget {
-  const TextRecognition({Key? key}) : super(key: key);
+  final AuthBase auth;
+  const TextRecognition({Key? key, required this.auth}) : super(key: key);
 
   @override
   State<TextRecognition> createState() => _TextRecognitionState();
@@ -20,7 +23,7 @@ class _TextRecognitionState extends State<TextRecognition> {
   bool textScanning = false;
 
   String dropdownValue = dropdown_categories.first;
-  Map<int, String> categories = {1: "Motivation", 2: "Study"};
+  Map<int, String> categories = {};
 
   XFile? imageFile;
 
@@ -36,7 +39,7 @@ class _TextRecognitionState extends State<TextRecognition> {
   void addToCategoryChip() {
     FirebaseFirestore.instance
         .collection("category")
-        .doc("allCategory")
+        .doc(widget.auth.currentUser!.uid)
         .get()
         .then((value) {
       int length = value["totalCategory"];
@@ -50,6 +53,12 @@ class _TextRecognitionState extends State<TextRecognition> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    addToCategoryChip();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -57,8 +66,8 @@ class _TextRecognitionState extends State<TextRecognition> {
         title: const Text("Quote Extract"),
       ),
       body: Center(
-          child: SingleChildScrollView(
-        child: Container(
+        child: SingleChildScrollView(
+          child: Container(
             margin: const EdgeInsets.all(10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -164,24 +173,28 @@ class _TextRecognitionState extends State<TextRecognition> {
                   height: 20,
                 ),
                 TextField(
-                    decoration: InputDecoration(
-                  labelText: "Author Name",
-                  border: myinputborder(), //normal border
-                  enabledBorder: myinputborder(), //enabled border
-                  focusedBorder: myfocusborder(), //focused border
-                  // set more border style like disabledBorder
-                )),
+                  controller: authorController,
+                  decoration: InputDecoration(
+                    labelText: "Author Name",
+                    border: myinputborder(), //normal border
+                    enabledBorder: myinputborder(), //enabled border
+                    focusedBorder: myfocusborder(), //focused border
+                    // set more border style like disabledBorder
+                  ),
+                ),
                 Wrap(
                   children: categories.entries
-                      .map((e) => category_chip(
-                            label: e.value,
-                            id: e.key,
-                            deleteChip: () {
-                              setState(() {
-                                deleteCategory(e.key);
-                              });
-                            },
-                          ))
+                      .map(
+                        (e) => category_chip(
+                          label: e.value,
+                          id: e.key,
+                          deleteChip: () {
+                            setState(() {
+                              deleteCategory(e.key);
+                            });
+                          },
+                        ),
+                      )
                       .toList(),
                 ),
                 // category_chip(),
@@ -201,7 +214,10 @@ class _TextRecognitionState extends State<TextRecognition> {
                     // This is called when the user selects an item.
                     setState(() {
                       dropdownValue = value!;
-                      categories.addAll({categories.length: value.toString()});
+                      int dd_index = dropdown_categories.indexOf(value);
+                      if (dd_index > 0) {
+                        categories.addAll({dd_index: value.toString()});
+                      }
                     });
                   },
                   items: dropdown_categories
@@ -213,14 +229,29 @@ class _TextRecognitionState extends State<TextRecognition> {
                   }).toList(),
                 ),
                 Directionality(
-                    textDirection: TextDirection.rtl,
-                    child: TextButton.icon(
-                        onPressed: () {},
-                        icon: Icon(Icons.save_rounded),
-                        label: Text("Save"))),
+                  textDirection: TextDirection.rtl,
+                  child: TextButton.icon(
+                    onPressed: () {
+                      UserQuoteDatabaseService(
+                              uid: widget.auth.currentUser!.uid)
+                          .insertQuote(
+                        quoteController.text.trim(),
+                        authorController.text.trim(),
+                        categories.keys.toList(),
+                        DateTime.now(),
+                      );
+                    },
+                    icon: Icon(Icons.save_rounded),
+                    label: const Text(
+                      "Save",
+                    ),
+                  ),
+                ),
               ],
-            )),
-      )),
+            ),
+          ),
+        ),
+      ),
     );
   }
 
@@ -259,11 +290,5 @@ class _TextRecognitionState extends State<TextRecognition> {
     quoteController.text = scannedText;
     setState(() {});
     textRecognizer.close();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    addToCategoryChip();
   }
 }

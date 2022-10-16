@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:quoter/screens/quotes_screen/quotes_screen.dart';
 import 'package:quoter/services/auth.dart';
 import 'screens/text_recognition_screen/text_recognition_screen.dart';
+import 'screens/quote_update_screen/quote_update_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,13 +22,20 @@ class MyApp extends StatelessWidget {
       title: 'Quoter',
       theme: ThemeData.dark(),
       darkTheme: ThemeData.dark(),
-      home: const TextRecognition(),
-      // home: const QuoteScreen(),
-      // home: Scaffold(
-      //   body: Wrapper(
-      //     auth: Auth(),
-      //   ),
+      // home: TextRecognition(
+      //   auth: Auth(),
       // ),
+      // home: UpdateQuote(
+      //   auth: Auth(),
+      // ),
+      // home: QuoteScreen(
+      //   auth: Auth(),
+      // ),
+      home: Scaffold(
+        body: Wrapper(
+          auth: Auth(),
+        ),
+      ),
     );
   }
 }

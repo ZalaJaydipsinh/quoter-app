@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:quoter/services/category_service.dart';
 import 'package:quoter/services/database_services.dart';
 
 abstract class AuthBase {
@@ -36,7 +37,7 @@ class Auth implements AuthBase {
     UserQuoteDatabaseService(uid: currentUser!.uid).insertDummyUserData(
       currentUser!.displayName.toString(),
     );
-
+    CategoryService(uid: currentUser!.uid).insertDummyCategory();
     return userCredentails;
   }
 
