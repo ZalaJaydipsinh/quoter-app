@@ -30,33 +30,9 @@ class _DisplayQuoteListState extends State<DisplayQuoteList> {
     return WillPopScope(
       onWillPop: () async {
         Navigator.pop(context);
-        Navigator.pop(context);
         return false;
       },
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("Quotes"),
-          centerTitle: true,
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back_rounded),
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pop(context);
-            },
-          ),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                try {
-                  await widget.auth.signOut();
-                } catch (e) {
-                  print(e);
-                }
-              },
-              icon: const Icon(Icons.logout),
-            ),
-          ],
-        ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(

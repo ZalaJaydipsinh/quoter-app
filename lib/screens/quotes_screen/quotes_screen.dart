@@ -21,6 +21,10 @@ class QuoteScreen extends StatefulWidget {
 
 class _QuoteScreenState extends State<QuoteScreen> {
   late UserQuoteDatabaseService userQuoteDatabaseService;
+  bool status = true;
+  int itemLengthLocal = 0;
+  List<Map<String, dynamic>> itemDetailsListReversedLocal = [];
+  dynamic fullCategoryLocal;
   List<String> allTextCategory = [];
   List fetchdata = [];
   void getOwnProjectDetails() {
@@ -46,108 +50,158 @@ class _QuoteScreenState extends State<QuoteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print(status);
+    // if (!status) {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => DisplayQuoteList(
+    //         itemLength: itemLengthLocal,
+    //         item: itemDetailsListReversedLocal,
+    //         fullCategory: fullCategoryLocal,
+    //         auth: widget.auth,
+    //       ),
+    //     ),
+    //   );
+    // }
     return Scaffold(
-      body: Column(
-        children: [
-          StreamBuilder<DocumentSnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection("users")
-                .doc(widget.auth.currentUser!.uid)
-                .snapshots(),
-            builder: (BuildContext context,
-                AsyncSnapshot<DocumentSnapshot> snapshot) {
-              if (snapshot.data == null) {
-                return Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const <Widget>[
-                      CircularProgressIndicator(),
-                      Text(
-                        "Fetching Data...",
-                        maxLines: 2,
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          color: Colors.black,
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              }
-
-              final DocumentSnapshot document =
-                  snapshot.data as DocumentSnapshot;
-
-              final Map<String, dynamic> documentData =
-                  document.data() as Map<String, dynamic>;
-
-              List checkingForEmptyList = documentData['quote'];
-              if (documentData['quote'] == null ||
-                  checkingForEmptyList.isEmpty) {
-                return Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const <Widget>[
-                      Text(
-                        "No Quotes Available...",
-                        maxLines: 2,
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          color: Colors.black,
-                        ),
-                      )
-                    ],
-                  ),
-                );
-              }
-
-              final List<Map<String, dynamic>> itemDetailList =
-                  (documentData['quote'] as List)
-                      .map((itemDetail) => itemDetail as Map<String, dynamic>)
-                      .toList();
-              var itemDetailsListReversed = itemDetailList.reversed.toList();
-
-              fetchDataAndNavigate(int length) {
-                print("coming inside om");
-                FirebaseFirestore.instance
-                    .collection("category")
-                    .doc(widget.auth.currentUser!.uid)
-                    .get()
-                    .then((value) {
-                  final length = value["totalCategory"];
-                  final fullCategory = value["category"];
-                  //TODO: Navigate From here
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DisplayQuoteList(
-                          itemLength: itemDetailsListReversed.length,
-                          item: itemDetailsListReversed,
-                          fullCategory: fullCategory,
-                          auth: widget.auth),
-                    ),
-                  );
-                });
-              }
-
-              fetchDataAndNavigate(itemDetailsListReversed.length);
-              return SizedBox(
-                height: MediaQuery.of(context).size.height,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Center(
-                        child: CircularProgressIndicator(
-                      color: Colors.lightGreenAccent,
-                    )),
-                  ],
-                ),
-              );
+      appBar: AppBar(
+        title: const Text("Quotes"),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                status = true;
+              });
             },
+            icon: const Icon(Icons.refresh_rounded),
           ),
+          // IconButton(
+          //   onPressed: () async {
+          //     try {
+          //       await widget.auth.signOut();
+          //     } catch (e) {
+          //       print(e);
+          //     }
+          //   },
+          //   icon: const Icon(Icons.logout),
+          // ),
         ],
       ),
+      body: status
+          ? Column(
+              children: [
+                StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection("users")
+                      .doc(widget.auth.currentUser!.uid)
+                      .snapshots(),
+                  builder: (BuildContext context,
+                      AsyncSnapshot<DocumentSnapshot> snapshot) {
+                    if (snapshot.data == null) {
+                      return Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const <Widget>[
+                            CircularProgressIndicator(),
+                            Text(
+                              "Fetching Data...",
+                              maxLines: 2,
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.black,
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }
+
+                    final DocumentSnapshot document =
+                        snapshot.data as DocumentSnapshot;
+
+                    final Map<String, dynamic> documentData =
+                        document.data() as Map<String, dynamic>;
+
+                    List checkingForEmptyList = documentData['quote'];
+                    if (documentData['quote'] == null ||
+                        checkingForEmptyList.isEmpty) {
+                      return Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const <Widget>[
+                            Text(
+                              "No Quotes Available...",
+                              maxLines: 2,
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                color: Colors.black,
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    }
+
+                    final List<Map<String, dynamic>> itemDetailList =
+                        (documentData['quote'] as List)
+                            .map((itemDetail) =>
+                                itemDetail as Map<String, dynamic>)
+                            .toList();
+                    var itemDetailsListReversed =
+                        itemDetailList.reversed.toList();
+
+                    fetchDataAndNavigate(int length) {
+                      FirebaseFirestore.instance
+                          .collection("category")
+                          .doc(widget.auth.currentUser!.uid)
+                          .get()
+                          .then((value) {
+                        final length = value["totalCategory"];
+                        final fullCategory = value["category"];
+                        //TODO: Navigate From here
+                        setState(() {
+                          itemLengthLocal = itemDetailsListReversed.length;
+                          itemDetailsListReversedLocal =
+                              itemDetailsListReversed;
+                          fullCategoryLocal = fullCategory;
+                          status = false;
+                        });
+                      });
+                    }
+
+                    fetchDataAndNavigate(itemDetailsListReversed.length);
+                    return SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.85,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: const <Widget>[
+                          Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.lightGreenAccent,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                )
+              ],
+            )
+          : DisplayQuoteList(
+              itemLength: itemLengthLocal,
+              item: itemDetailsListReversedLocal,
+              fullCategory: fullCategoryLocal,
+              auth: widget.auth,
+            ),
     );
   }
 }

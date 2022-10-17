@@ -82,7 +82,7 @@ class _TextRecognitionState extends State<TextRecognition> {
                   ),
                 );
               },
-              icon: Icon(Icons.format_quote)),
+              icon: const Icon(Icons.format_quote)),
           IconButton(
               onPressed: () => {
                     Navigator.push(
@@ -92,7 +92,7 @@ class _TextRecognitionState extends State<TextRecognition> {
                       ),
                     ),
                   },
-              icon: Icon(Icons.category_outlined)),
+              icon: const Icon(Icons.category_outlined)),
         ],
       ),
       body: Center(
