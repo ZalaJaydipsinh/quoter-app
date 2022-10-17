@@ -7,8 +7,8 @@ import 'package:quoter/screens/quotes_screen/quotes_screen.dart';
 import 'package:quoter/services/auth.dart';
 import 'components/input_field.dart';
 import 'components/category_chip.dart';
-import 'package:quoter/services/category_service.dart';
 import 'package:quoter/services/database_services.dart';
+import 'package:quoter/screens/category_screen/add_category_screen.dart';
 
 class TextRecognition extends StatefulWidget {
   final AuthBase auth;
@@ -22,7 +22,7 @@ List<String> dropdown_categories = <String>['Select Category'];
 
 class _TextRecognitionState extends State<TextRecognition> {
   bool textScanning = false;
-
+  String scannedText = "";
   String dropdownValue = dropdown_categories.first;
   Map<int, String> categories = {};
 
@@ -30,8 +30,6 @@ class _TextRecognitionState extends State<TextRecognition> {
 
   TextEditingController quoteController = TextEditingController();
   TextEditingController authorController = TextEditingController();
-
-  String scannedText = "";
 
   void deleteCategory(int id) {
     categories.remove(id);
@@ -44,9 +42,9 @@ class _TextRecognitionState extends State<TextRecognition> {
         .get()
         .then((value) {
       int length = value["totalCategory"];
-      print(length);
+      // print(length);
       for (int i = 0; i < length; i++) {
-        print(value["category"][i]);
+        // print(value["category"][i]);
         dropdown_categories.add(value["category"][i]);
       }
       setState(() {});
@@ -75,6 +73,15 @@ class _TextRecognitionState extends State<TextRecognition> {
                                 QuoteScreen(auth: widget.auth)))
                   },
               icon: Icon(Icons.format_quote)),
+          IconButton(
+              onPressed: () => {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                AddCategory(auth: widget.auth)))
+                  },
+              icon: Icon(Icons.category_outlined)),
         ],
       ),
       body: Center(

@@ -14,9 +14,9 @@ class UserQuoteDatabaseService {
       'totalQuotes': 1,
       'quote': FieldValue.arrayUnion([
         {
-          "text": "Simplisity is also a fasion but everyone can't afford it.",
+          "text": "Simplisity is also a fashion but everyone can't afford it.",
           "author": "APJ Abdul Kalam",
-          "category": [0, 2],
+          "category": [0],
           'date': DateTime.now(),
         }
       ]),

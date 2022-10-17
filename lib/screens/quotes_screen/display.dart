@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:quoter/screens/quotes_screen/components/quote_list_tile.dart';
 import 'package:quoter/services/auth.dart';
+import 'dart:math';
+import 'package:quoter/constant.dart';
 
-class DisplayQuoteList extends StatelessWidget {
+class DisplayQuoteList extends StatefulWidget {
   const DisplayQuoteList({
     Key? key,
     required this.itemLength,
@@ -15,8 +17,13 @@ class DisplayQuoteList extends StatelessWidget {
 
   final List<Map<String, dynamic>> item;
   final List<dynamic> fullCategory;
-  // final List<int> categoryIndex;
 
+  @override
+  State<DisplayQuoteList> createState() => _DisplayQuoteListState();
+}
+
+class _DisplayQuoteListState extends State<DisplayQuoteList> {
+  // final List<int> categoryIndex;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,19 +31,18 @@ class DisplayQuoteList extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            Text("quotes"),
             Expanded(
               child: ListView.builder(
-                itemCount: itemLength,
+                itemCount: widget.itemLength,
                 itemBuilder: (BuildContext context, int index) {
                   return CustomQuoteListTile(
-                    quoteText: item[index]["text"],
-                    author: item[index]["author"],
-                    categories: item[index]["category"],
-                    fullCategory: fullCategory,
-                    colorIndex: 0,
-                    indexOfQuote: index,
-                    auth: auth,
+                    quoteText: widget.item[index]["text"],
+                    author: widget.item[index]["author"],
+                    categories: widget.item[index]["category"],
+                    fullCategory: widget.fullCategory,
+                    colorIndex: Random().nextInt(kBarColorSet.length),
+                    indexOfQuote: widget.itemLength - index - 1,
+                    auth: widget.auth,
                   );
                 },
               ),

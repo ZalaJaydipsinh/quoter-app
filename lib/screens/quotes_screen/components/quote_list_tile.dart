@@ -242,14 +242,7 @@ class _CustomQuoteListTileState extends State<CustomQuoteListTile> {
                 ),
                 const SizedBox(height: 5.0),
                 Text(
-                  // "${res.map((e) => "$e")}",
-                  finalResultToBePrinted,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                const SizedBox(height: 5.0),
-                Text(
-                  widget.author,
+                  '- ${widget.author}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -261,11 +254,6 @@ class _CustomQuoteListTileState extends State<CustomQuoteListTile> {
                     children: [
                       Row(
                         children: <Widget>[
-                          CustomButtonQuoteTile(
-                            onPressed: () {},
-                            icon: Icons.favorite_outline_rounded,
-                          ),
-                          const SizedBox(width: 8.0),
                           CustomButtonQuoteTile(
                             onPressed: () {},
                             icon: Icons.share_rounded,
@@ -289,6 +277,18 @@ class _CustomQuoteListTileState extends State<CustomQuoteListTile> {
                               print("q: $res");
                             },
                             icon: Icons.edit_rounded,
+                          ),
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          Text(
+                            // "${res.map((e) => "$e")}",
+                            finalResultToBePrinted,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: Colors.grey,
+                            ),
                           ),
                         ],
                       ),

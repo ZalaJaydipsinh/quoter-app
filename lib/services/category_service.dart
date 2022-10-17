@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 class CategoryService {
   final String uid;
@@ -10,7 +13,7 @@ class CategoryService {
     return await categoryCollection.doc(uid).set({
       'totalCategory': 1,
       'category': FieldValue.arrayUnion([
-        "Sprituality",
+        "Favourite",
       ]),
     });
   }
@@ -34,6 +37,19 @@ class CategoryService {
     return responseToBeSend;
   }
 
+  Future updateCategory(List<String> categories) async {
+    // print("HERE WE GO $indexToPass");
+    return await FirebaseFirestore.instance
+        .collection('category')
+        .doc(uid)
+        .get()
+        .then((snapshot) {
+      FirebaseFirestore.instance.collection('category').doc(uid).set({
+        'totalCategory': categories.length,
+        'category': FieldValue.arrayUnion(categories),
+      });
+    });
+  }
   // Future<List> getCategory() async {
   //   List catrgoryArray = [];
   //   await categoryCollection

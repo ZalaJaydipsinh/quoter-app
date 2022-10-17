@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:quoter/screens/quotes_screen/quotes_screen.dart';
 import 'package:quoter/services/auth.dart';
 import 'components/input_field.dart';
 import 'package:quoter/services/database_services.dart';
@@ -168,10 +169,32 @@ class _UpdateQuoteState extends State<UpdateQuote> {
                           authorController.text,
                           categories,
                           widget.indexOfQuote);
+                      // Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //         builder: (context) =>
+                      //             QuoteScreen(auth: widget.auth)));
                     },
                     icon: Icon(Icons.save_rounded),
                     label: const Text(
                       "Update",
+                    ),
+                  ),
+                ),
+                Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: TextButton.icon(
+                    onPressed: () {
+                      deletePerticularQuote(
+                          widget.auth.currentUser!.uid,
+                          quoteController.text,
+                          authorController.text,
+                          categories,
+                          widget.indexOfQuote);
+                    },
+                    icon: Icon(Icons.delete_forever_rounded),
+                    label: const Text(
+                      "Delete",
                     ),
                   ),
                 ),
@@ -222,6 +245,50 @@ class _UpdateQuoteState extends State<UpdateQuote> {
       });
 
       print("Updated...");
+    });
+  }
+
+  Future deletePerticularQuote(String uid, String quoteText, String quoteAuthor,
+      Map<int, String> quoteCategory, int indexToPass) async {
+    print("HERE WE GO $indexToPass");
+    return await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        .then((snapshot) {
+      final retrievedAuthor = snapshot.data()!['quote'][indexToPass]['author'];
+      final retrievedCategory =
+          snapshot.data()!['quote'][indexToPass]['category'];
+      final retrievedDate = snapshot.data()!['quote'][indexToPass]['date'];
+      final retrievedText = snapshot.data()!['quote'][indexToPass]['text'];
+
+      UserQuoteDatabaseService(uid: uid)
+          .updateTotalQuotes(snapshot.data()!['totalQuotes'] - 1);
+      // print("ERROR!!! " + retrievedAuthor + retrievedText);
+      // print(retrievedDate.toString());
+      // print(retrievedCategory.toString());
+      List updatedListToBeStored = [], listToBeDeleted = [];
+      updatedListToBeStored.add({
+        "author": quoteAuthor,
+        "category": quoteCategory.keys.toList(),
+        "date": DateTime.now(),
+        "text": quoteText,
+      });
+      listToBeDeleted.add({
+        "author": retrievedAuthor,
+        "category": retrievedCategory,
+        "date": retrievedDate,
+        "text": retrievedText,
+      });
+      // FirebaseFirestore.instance.collection('users').doc(uid).update({
+      //   'quote': FieldValue.arrayUnion(updatedListToBeStored),
+      // });
+
+      FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'quote': FieldValue.arrayRemove(listToBeDeleted),
+      });
+
+      print("Deleted...");
     });
   }
 }

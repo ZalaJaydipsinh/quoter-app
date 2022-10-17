@@ -60,23 +60,6 @@ class _QuoteScreenState extends State<QuoteScreen> {
           },
           icon: const Icon(Icons.logout),
         ),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () async {
-              try {
-                // userQuoteDatabaseService.insertQuote(
-                //     "Don't talk show me your code!",
-                //     "Jay Chauhan",
-                //     ["Coding"],
-                //     DateTime.now());
-
-              } catch (e) {
-                print("ERROR: $e");
-              }
-            },
-            icon: Icon(Icons.add),
-          )
-        ],
       ),
       body: Column(
         children: [
@@ -136,7 +119,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
                   (documentData['quote'] as List)
                       .map((itemDetail) => itemDetail as Map<String, dynamic>)
                       .toList();
-              var itemDetailsListReversed = itemDetailList.toList();
+              var itemDetailsListReversed = itemDetailList.reversed.toList();
 
               fetchDataAndNavigate(int length) {
                 FirebaseFirestore.instance
@@ -153,13 +136,12 @@ class _QuoteScreenState extends State<QuoteScreen> {
                       builder: (context) => DisplayQuoteList(
                           itemLength: itemDetailsListReversed.length,
                           item: itemDetailsListReversed,
-                          // categoryIndex: category,
                           fullCategory: fullCategory,
                           auth: widget.auth),
                     ),
                   );
                 });
-                print(allTextCategory);
+                // print(allTextCategory);
                 // return CustomQuoteListTile(
                 //   quoteText: text,
                 //   author: author,
@@ -169,14 +151,6 @@ class _QuoteScreenState extends State<QuoteScreen> {
 
               fetchDataAndNavigate(itemDetailsListReversed.length);
               return Container();
-              // return Expanded(
-              //   child: ListView.builder(
-              //     itemCount: itemDetailsListReversed.length,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       return _buildListTileHere(index);
-              //     },
-              //   ),
-              // );
             },
           ),
         ],
@@ -184,40 +158,3 @@ class _QuoteScreenState extends State<QuoteScreen> {
     );
   }
 }
-
-
-/* child: ListView(
-          physics: const BouncingScrollPhysics(),
-          children: const <Widget>[
-            CustomQuoteListTile(
-              quoteText:
-                  "The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children.",
-              author: "Jaydipsinh Zala",
-              colorIndex: 0,
-            ),
-            CustomQuoteListTile(
-              quoteText:
-                  "The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children.",
-              author: "Jaydipsinh Zala",
-              colorIndex: 1,
-            ),
-            CustomQuoteListTile(
-              quoteText:
-                  "The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children.",
-              author: "Jaydipsinh Zala",
-              colorIndex: 2,
-            ),
-            CustomQuoteListTile(
-              quoteText:
-                  "The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children.",
-              author: "Jaydipsinh Zala",
-              colorIndex: 3,
-            ),
-            CustomQuoteListTile(
-              quoteText:
-                  "The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children. The law of love could ne nest understand and learned through little children.",
-              author: "Jaydipsinh Zala",
-              colorIndex: 4,
-            ),
-          ],
-        ), */

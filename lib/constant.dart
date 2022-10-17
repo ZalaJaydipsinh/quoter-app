@@ -8,4 +8,7 @@ List<Color> kBarColorSet = [
   Colors.lightBlueAccent,
   Colors.yellowAccent,
   Colors.purpleAccent,
+  Colors.tealAccent,
+  Colors.orangeAccent,
+  Colors.blueAccent,
 ];
