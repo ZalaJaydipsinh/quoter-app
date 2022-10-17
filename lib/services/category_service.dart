@@ -10,12 +10,22 @@ class CategoryService {
       FirebaseFirestore.instance.collection('category');
 
   Future insertDummyCategory() async {
-    return await categoryCollection.doc(uid).set({
-      'totalCategory': 1,
-      'category': FieldValue.arrayUnion([
-        "Favourite",
-      ]),
+    int len = 0;
+    await FirebaseFirestore.instance
+        .collection("category")
+        .doc(uid)
+        .get()
+        .then((value) {
+      len = value["totalCategory"];
     });
+    if (len == 0) {
+      return await categoryCollection.doc(uid).set({
+        'totalCategory': 1,
+        'category': FieldValue.arrayUnion([
+          "Favourite",
+        ]),
+      });
+    }
   }
 
   Future updateTotalCategory(int totalCategory) async {

@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:quoter/screens/quotes_screen/quotes_screen.dart';
 import 'package:quoter/services/auth.dart';
 import 'screens/text_recognition_screen/text_recognition_screen.dart';
+import 'screens/home_screen/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -61,7 +63,10 @@ class Wrapper extends StatelessWidget {
               ),
             );
           } else {
-            return TextRecognition(
+            // return SplashScreen(
+            //   auth: auth,
+            // );
+            return SplashScreen(
               auth: auth,
             );
           }

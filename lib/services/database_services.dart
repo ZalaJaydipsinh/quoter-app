@@ -9,18 +9,29 @@ class UserQuoteDatabaseService {
       FirebaseFirestore.instance.collection('users');
 
   Future insertDummyUserData(String name) async {
-    return await usersCollection.doc(uid).set({
-      'name': name,
-      'totalQuotes': 1,
-      'quote': FieldValue.arrayUnion([
-        {
-          "text": "Simplisity is also a fashion but everyone can't afford it.",
-          "author": "APJ Abdul Kalam",
-          "category": [0],
-          'date': DateTime.now(),
-        }
-      ]),
+    int len = 0;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get()
+        .then((snapshot) {
+      len = snapshot.data()!['totalQuotes'];
     });
+    if (len == 0) {
+      return await usersCollection.doc(uid).set({
+        'name': name,
+        'totalQuotes': 1,
+        'quote': FieldValue.arrayUnion([
+          {
+            "text":
+                "Simplisity is also a fashion but everyone can't afford it.",
+            "author": "APJ Abdul Kalam",
+            "category": [0],
+            'date': DateTime.now(),
+          }
+        ]),
+      });
+    }
   }
 
   Future updateTotalQuotes(int totalQuotes) async {

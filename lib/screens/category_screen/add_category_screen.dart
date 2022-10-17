@@ -85,7 +85,7 @@ class _AddCategoryState extends State<AddCategory> {
                         categoryController.text = value;
                         dd_index--;
                         dropdownIndex = dd_index;
-                        print("dd_index:: $dd_index");
+                        // print("dd_index:: $dd_index");
                         // categories.addAll({dd_index: dropdownValue.toString()});
                       }
                     });

@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:quoter/constant.dart';
+import 'package:quoter/screens/home_screen/Home.dart';
 import 'package:quoter/screens/quotes_screen/components/quote_list_tile.dart';
 import 'package:quoter/screens/quotes_screen/display.dart';
+import 'package:quoter/screens/text_recognition_screen/text_recognition_screen.dart';
 import 'package:quoter/services/auth.dart';
 import 'package:quoter/services/category_service.dart';
 import 'package:quoter/services/database_services.dart';
@@ -50,7 +52,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print(status);
+    // print(status);
     // if (!status) {
     //   Navigator.push(
     //     context,
@@ -69,12 +71,25 @@ class _QuoteScreenState extends State<QuoteScreen> {
         title: const Text("Quotes"),
         centerTitle: true,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: const Icon(Icons.add_rounded),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TextRecognition(auth: widget.auth)));
           },
         ),
         actions: [
+          IconButton(
+            onPressed: () async {
+              try {
+                await widget.auth.signOut();
+              } catch (e) {
+                print(e);
+              }
+            },
+            icon: const Icon(Icons.logout),
+          ),
           IconButton(
             onPressed: () {
               setState(() {
@@ -83,16 +98,16 @@ class _QuoteScreenState extends State<QuoteScreen> {
             },
             icon: const Icon(Icons.refresh_rounded),
           ),
-          // IconButton(
-          //   onPressed: () async {
-          //     try {
-          //       await widget.auth.signOut();
-          //     } catch (e) {
-          //       print(e);
-          //     }
-          //   },
-          //   icon: const Icon(Icons.logout),
-          // ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Home(
+                          auth: widget.auth, quoteText: "Give Your Thoughts")));
+            },
+            icon: const Icon(Icons.wallpaper_rounded),
+          ),
         ],
       ),
       body: status

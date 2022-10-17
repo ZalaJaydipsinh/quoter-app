@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quoter/constant.dart';
+import 'package:quoter/screens/home_screen/Home.dart';
 import 'package:quoter/screens/quote_update_screen/quote_update_screen.dart';
 import 'package:quoter/services/auth.dart';
 import 'package:quoter/widget/custom_dialog.dart';
@@ -177,9 +178,9 @@ class _CustomQuoteListTileState extends State<CustomQuoteListTile> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.categories);
     // print(widget.categories);
-    print(widget.fullCategory);
+    // print(widget.categories);
+    // print(widget.fullCategory);
     final Size size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.only(top: 8.0),
@@ -268,11 +269,26 @@ class _CustomQuoteListTileState extends State<CustomQuoteListTile> {
                                   ),
                                 ),
                               );
-                              print("q: ${widget.quoteText}");
-                              print("q: ${widget.author}");
-                              print("q: $res");
+                              // print("q: ${widget.quoteText}");
+                              // print("q: ${widget.author}");
+                              // print("q: $res");
                             },
                             icon: Icons.edit_rounded,
+                          ),
+                          const SizedBox(width: 5.0),
+                          CustomButtonQuoteTile(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Home(
+                                    auth: widget.auth,
+                                    quoteText: widget.quoteText,
+                                  ),
+                                ),
+                              );
+                            },
+                            icon: Icons.wallpaper_rounded,
                           ),
                           const SizedBox(width: 10.0),
                           Text(

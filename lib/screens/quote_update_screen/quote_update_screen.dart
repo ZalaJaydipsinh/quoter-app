@@ -65,7 +65,7 @@ class _UpdateQuoteState extends State<UpdateQuote> {
     quoteController.text = widget.quoteText;
     authorController.text = widget.quoteAuthor;
     categories = widget.quoteCategory;
-    print("e index 6e: ${widget.indexOfQuote}");
+    // print("e index 6e: ${widget.indexOfQuote}");
   }
 
   @override
@@ -188,6 +188,7 @@ class _UpdateQuoteState extends State<UpdateQuote> {
                           authorController.text,
                           categories,
                           widget.indexOfQuote);
+                      Navigator.pop(context);
                     },
                     icon: Icon(Icons.delete_forever_rounded),
                     label: const Text(
@@ -205,7 +206,7 @@ class _UpdateQuoteState extends State<UpdateQuote> {
 
   Future updatePerticularQuote(String uid, String quoteText, String quoteAuthor,
       Map<int, String> quoteCategory, int indexToPass) async {
-    print("HERE WE GO $indexToPass");
+    // print("HERE WE GO $indexToPass");
     return await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -241,13 +242,12 @@ class _UpdateQuoteState extends State<UpdateQuote> {
         'quote': FieldValue.arrayRemove(listToBeDeleted),
       });
 
-      print("Updated...");
+      // print("Updated...");
     });
   }
 
   Future deletePerticularQuote(String uid, String quoteText, String quoteAuthor,
       Map<int, String> quoteCategory, int indexToPass) async {
-    print("HERE WE GO $indexToPass");
     return await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
@@ -284,8 +284,6 @@ class _UpdateQuoteState extends State<UpdateQuote> {
       FirebaseFirestore.instance.collection('users').doc(uid).update({
         'quote': FieldValue.arrayRemove(listToBeDeleted),
       });
-
-      print("Deleted...");
     });
   }
 }

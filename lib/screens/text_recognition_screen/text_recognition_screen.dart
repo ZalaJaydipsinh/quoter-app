@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
@@ -72,18 +73,6 @@ class _TextRecognitionState extends State<TextRecognition> {
         title: const Text("Quote Extract"),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QuoteScreen(
-                      auth: widget.auth,
-                    ),
-                  ),
-                );
-              },
-              icon: const Icon(Icons.format_quote)),
-          IconButton(
               onPressed: () => {
                     Navigator.push(
                       context,
@@ -104,10 +93,47 @@ class _TextRecognitionState extends State<TextRecognition> {
               children: [
                 if (textScanning) const CircularProgressIndicator(),
                 if (!textScanning && imageFile == null)
-                  Container(
-                    width: 300,
-                    height: 300,
-                    color: Colors.grey[300]!,
+                  DottedBorder(
+                    strokeWidth: 3,
+                    dashPattern: [7, 7, 7, 7],
+                    color: Colors.white,
+                    borderType: BorderType.RRect,
+                    strokeCap: StrokeCap.round,
+                    radius: Radius.circular(20.0),
+                    child: Container(
+                      width: 300,
+                      height: 300,
+                      decoration: BoxDecoration(
+                        color: Colors.indigoAccent,
+                        borderRadius: BorderRadius.circular(18.0),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: Color.fromARGB(255, 57, 76, 185)
+                                .withOpacity(0.2),
+                            offset: Offset(0, 12),
+                            blurRadius: 16.0,
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const <Widget>[
+                          Icon(
+                            Icons.camera_rounded,
+                            size: 60.0,
+                          ),
+                          SizedBox(height: 15.0),
+                          Text(
+                            "No Image Selected\nPlease choose Image.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 20.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                 if (imageFile != null) Image.file(File(imageFile!.path)),
                 Row(
@@ -118,9 +144,8 @@ class _TextRecognitionState extends State<TextRecognition> {
                       padding: const EdgeInsets.only(top: 10),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colors.grey,
-                          shadowColor: Colors.grey[400],
+                          primary: Colors.indigoAccent,
+                          shadowColor: Colors.grey[500],
                           elevation: 10,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
@@ -137,12 +162,14 @@ class _TextRecognitionState extends State<TextRecognition> {
                             children: [
                               const Icon(
                                 Icons.image,
+                                color: Colors.white,
                                 size: 30,
                               ),
                               Text(
                                 "Gallery",
                                 style: TextStyle(
-                                    fontSize: 13, color: Colors.grey[600]),
+                                  fontSize: 13,
+                                ),
                               )
                             ],
                           ),
@@ -154,9 +181,8 @@ class _TextRecognitionState extends State<TextRecognition> {
                       padding: const EdgeInsets.only(top: 10),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colors.grey,
-                          shadowColor: Colors.grey[400],
+                          primary: Colors.indigoAccent,
+                          shadowColor: Colors.grey[500],
                           elevation: 10,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0)),
@@ -172,12 +198,14 @@ class _TextRecognitionState extends State<TextRecognition> {
                             children: [
                               const Icon(
                                 Icons.camera_alt,
+                                color: Colors.white,
                                 size: 30,
                               ),
                               Text(
                                 "Camera",
                                 style: TextStyle(
-                                    fontSize: 13, color: Colors.grey[600]),
+                                  fontSize: 13,
+                                ),
                               )
                             ],
                           ),
@@ -275,11 +303,15 @@ class _TextRecognitionState extends State<TextRecognition> {
                         categories.keys.toList(),
                         DateTime.now(),
                       );
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  QuoteScreen(auth: widget.auth)));
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => QuoteScreen(
+                      //       auth: widget.auth,
+                      //     ),
+                      //   ),
+                      // );
+                      Navigator.pop(context);
                     },
                     icon: Icon(Icons.save_rounded),
                     label: const Text(
