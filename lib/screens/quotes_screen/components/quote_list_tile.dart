@@ -255,22 +255,18 @@ class _CustomQuoteListTileState extends State<CustomQuoteListTile> {
                       Row(
                         children: <Widget>[
                           CustomButtonQuoteTile(
-                            onPressed: () {},
-                            icon: Icons.share_rounded,
-                          ),
-                          const SizedBox(width: 8.0),
-                          CustomButtonQuoteTile(
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => UpdateQuote(
-                                          auth: widget.auth,
-                                          quoteAuthor: widget.author,
-                                          quoteText: widget.quoteText,
-                                          quoteCategory: categoriesMap,
-                                          indexOfQuote: widget.indexOfQuote,
-                                        )),
+                                  builder: (context) => UpdateQuote(
+                                    auth: widget.auth,
+                                    quoteAuthor: widget.author,
+                                    quoteText: widget.quoteText,
+                                    quoteCategory: categoriesMap,
+                                    indexOfQuote: widget.indexOfQuote,
+                                  ),
+                                ),
                               );
                               print("q: ${widget.quoteText}");
                               print("q: ${widget.author}");
@@ -278,15 +274,13 @@ class _CustomQuoteListTileState extends State<CustomQuoteListTile> {
                             },
                             icon: Icons.edit_rounded,
                           ),
-                          SizedBox(
-                            width: 5.0,
-                          ),
+                          const SizedBox(width: 10.0),
                           Text(
                             // "${res.map((e) => "$e")}",
                             finalResultToBePrinted,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.grey,
                             ),
                           ),

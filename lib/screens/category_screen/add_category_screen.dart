@@ -80,10 +80,9 @@ class _AddCategoryState extends State<AddCategory> {
                     // This is called when the user selects an item.
                     setState(() {
                       dropdownValue = value!;
-                      categoryController.text = value;
-                      int dd_index =
-                          dropdown_categories.indexOf(dropdownValue!);
+                      int dd_index = dropdown_categories.indexOf(value);
                       if (dd_index > 0) {
+                        categoryController.text = value;
                         dd_index--;
                         dropdownIndex = dd_index;
                         print("dd_index:: $dd_index");
@@ -104,7 +103,7 @@ class _AddCategoryState extends State<AddCategory> {
                   child: TextButton.icon(
                     onPressed: () {
                       CategoryService(uid: widget.auth.currentUser!.uid)
-                          .insertCategory(categoryController.text);
+                          .insertCategory(categoryController.text.trim());
                       Timer(Duration(seconds: 1), () => fetchCategories());
                       categoryController.clear();
                     },

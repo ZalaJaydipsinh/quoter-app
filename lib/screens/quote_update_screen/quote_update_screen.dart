@@ -169,11 +169,8 @@ class _UpdateQuoteState extends State<UpdateQuote> {
                           authorController.text,
                           categories,
                           widget.indexOfQuote);
-                      // Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //         builder: (context) =>
-                      //             QuoteScreen(auth: widget.auth)));
+                      Navigator.pop(context);
+                      // Navigator.pop(context);
                     },
                     icon: Icon(Icons.save_rounded),
                     label: const Text(

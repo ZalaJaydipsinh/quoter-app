@@ -72,21 +72,25 @@ class _TextRecognitionState extends State<TextRecognition> {
         title: const Text("Quote Extract"),
         actions: [
           IconButton(
-              onPressed: () => {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                QuoteScreen(auth: widget.auth)))
-                  },
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => QuoteScreen(
+                      auth: widget.auth,
+                    ),
+                  ),
+                );
+              },
               icon: Icon(Icons.format_quote)),
           IconButton(
               onPressed: () => {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                AddCategory(auth: widget.auth)))
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => AddCategory(auth: widget.auth),
+                      ),
+                    ),
                   },
               icon: Icon(Icons.category_outlined)),
         ],
@@ -110,73 +114,76 @@ class _TextRecognitionState extends State<TextRecognition> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        padding: const EdgeInsets.only(top: 10),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            onPrimary: Colors.grey,
-                            shadowColor: Colors.grey[400],
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0)),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.only(top: 10),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.grey,
+                          shadowColor: Colors.grey[400],
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          onPressed: () {
-                            getImage(ImageSource.gallery);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 5),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.image,
-                                  size: 30,
-                                ),
-                                Text(
-                                  "Gallery",
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.grey[600]),
-                                )
-                              ],
-                            ),
+                        ),
+                        onPressed: () {
+                          getImage(ImageSource.gallery);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 5),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.image,
+                                size: 30,
+                              ),
+                              Text(
+                                "Gallery",
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.grey[600]),
+                              )
+                            ],
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
                     Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 5),
-                        padding: const EdgeInsets.only(top: 10),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.white,
-                            onPrimary: Colors.grey,
-                            shadowColor: Colors.grey[400],
-                            elevation: 10,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8.0)),
+                      margin: const EdgeInsets.symmetric(horizontal: 5),
+                      padding: const EdgeInsets.only(top: 10),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.white,
+                          onPrimary: Colors.grey,
+                          shadowColor: Colors.grey[400],
+                          elevation: 10,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0)),
+                        ),
+                        onPressed: () {
+                          getImage(ImageSource.camera);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 5),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.camera_alt,
+                                size: 30,
+                              ),
+                              Text(
+                                "Camera",
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.grey[600]),
+                              )
+                            ],
                           ),
-                          onPressed: () {
-                            getImage(ImageSource.camera);
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(
-                                vertical: 5, horizontal: 5),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.camera_alt,
-                                  size: 30,
-                                ),
-                                Text(
-                                  "Camera",
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.grey[600]),
-                                )
-                              ],
-                            ),
-                          ),
-                        )),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
                 const SizedBox(

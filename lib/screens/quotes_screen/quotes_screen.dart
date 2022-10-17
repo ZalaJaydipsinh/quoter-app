@@ -30,7 +30,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
         .get()
         .then((snapshot) {
       fetchdata = snapshot.data()!['quote'];
-      fetchdata.map((e) => print('e printed: ${e['text']}'));
+      // fetchdata.map((e) => print('e printed: ${e['text']}'));
       // print("qutoes: $fetchdata");
     });
   }
@@ -47,20 +47,6 @@ class _QuoteScreenState extends State<QuoteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Quotes"),
-        centerTitle: true,
-        leading: IconButton(
-          onPressed: () async {
-            try {
-              await widget.auth.signOut();
-            } catch (e) {
-              print(e);
-            }
-          },
-          icon: const Icon(Icons.logout),
-        ),
-      ),
       body: Column(
         children: [
           StreamBuilder<DocumentSnapshot>(
@@ -122,6 +108,7 @@ class _QuoteScreenState extends State<QuoteScreen> {
               var itemDetailsListReversed = itemDetailList.reversed.toList();
 
               fetchDataAndNavigate(int length) {
+                print("coming inside om");
                 FirebaseFirestore.instance
                     .collection("category")
                     .doc(widget.auth.currentUser!.uid)
@@ -141,16 +128,22 @@ class _QuoteScreenState extends State<QuoteScreen> {
                     ),
                   );
                 });
-                // print(allTextCategory);
-                // return CustomQuoteListTile(
-                //   quoteText: text,
-                //   author: author,
-                //   colorIndex: 0,
-                // );
               }
 
               fetchDataAndNavigate(itemDetailsListReversed.length);
-              return Container();
+              return SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.lightGreenAccent,
+                    )),
+                  ],
+                ),
+              );
             },
           ),
         ],
