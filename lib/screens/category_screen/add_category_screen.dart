@@ -1,14 +1,10 @@
-import 'dart:io';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:quoter/screens/quotes_screen/quotes_screen.dart';
 import 'package:quoter/services/auth.dart';
 import 'components/input_field.dart';
-import 'components/category_chip.dart';
 import 'package:quoter/services/category_service.dart';
-import 'package:quoter/services/database_services.dart';
+import 'components/fetch_categories.dart';
 
 class AddCategory extends StatefulWidget {
   final AuthBase auth;
@@ -19,9 +15,9 @@ class AddCategory extends StatefulWidget {
 }
 
 class _AddCategoryState extends State<AddCategory> {
-  List<String> dropdown_categories = <String>['Select Category'];
+  List<String> dropdown_categories = [];
 
-  String? dropdownValue;
+  String dropdownValue = "";
   int dropdownIndex = 0;
   // Map<int, String> categories = {};
 
@@ -32,30 +28,16 @@ class _AddCategoryState extends State<AddCategory> {
   //   categories.remove(id);
   // }
 
-  void addToCategoryChip() async {
-    dropdown_categories = [];
-    dropdown_categories.clear();
-    dropdown_categories.add("Select Category");
+  void fetchCategories() async {
+    dropdown_categories = await addToCategoryChip(widget.auth.currentUser!.uid);
     dropdownValue = dropdown_categories.first;
-    await FirebaseFirestore.instance
-        .collection("category")
-        .doc(widget.auth.currentUser!.uid)
-        .get()
-        .then((value) {
-      int length = value["totalCategory"];
-      // print(length);
-      for (int i = 0; i < length; i++) {
-        // print(value["category"][i]);
-        dropdown_categories.add(value["category"][i]);
-      }
-    });
     setState(() {});
   }
 
   @override
   void initState() {
-    addToCategoryChip();
     super.initState();
+    fetchCategories();
   }
 
   @override
@@ -123,7 +105,8 @@ class _AddCategoryState extends State<AddCategory> {
                     onPressed: () {
                       CategoryService(uid: widget.auth.currentUser!.uid)
                           .insertCategory(categoryController.text);
-                      Navigator.pop(context);
+                      Timer(Duration(seconds: 1), () => fetchCategories());
+                      categoryController.clear();
                     },
                     icon: Icon(Icons.add_rounded),
                     label: const Text(
@@ -135,33 +118,22 @@ class _AddCategoryState extends State<AddCategory> {
                   textDirection: TextDirection.rtl,
                   child: TextButton.icon(
                     onPressed: () async {
-                      List<String> updatedCategories = [];
-                      updatedCategories.addAll(dropdown_categories);
-                      updatedCategories.removeAt(0);
-                      updatedCategories[dropdownIndex] =
-                          categoryController.text;
+                      if (categoryController.text.isNotEmpty) {
+                        List<String> updatedCategories = [];
+                        updatedCategories.addAll(dropdown_categories);
+                        updatedCategories.removeAt(0);
+                        updatedCategories[dropdownIndex] =
+                            categoryController.text;
 
-                      await CategoryService(uid: widget.auth.currentUser!.uid)
-                          .updateCategory(updatedCategories);
-                      // Navigator.pop(context);
-                      addToCategoryChip();
+                        await CategoryService(uid: widget.auth.currentUser!.uid)
+                            .updateCategory(updatedCategories);
+                      }
+                      categoryController.clear();
+                      Timer(Duration(seconds: 1), () => fetchCategories());
                     },
                     icon: Icon(Icons.update_rounded),
                     label: const Text(
                       "Update",
-                    ),
-                  ),
-                ),
-                Directionality(
-                  textDirection: TextDirection.rtl,
-                  child: TextButton.icon(
-                    onPressed: () {
-                      CategoryService(uid: widget.auth.currentUser!.uid)
-                          .insertDummyCategory();
-                    },
-                    icon: Icon(Icons.update_rounded),
-                    label: const Text(
-                      "Insert Dummy category",
                     ),
                   ),
                 ),

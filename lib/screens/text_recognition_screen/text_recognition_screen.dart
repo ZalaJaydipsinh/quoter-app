@@ -9,6 +9,7 @@ import 'components/input_field.dart';
 import 'components/category_chip.dart';
 import 'package:quoter/services/database_services.dart';
 import 'package:quoter/screens/category_screen/add_category_screen.dart';
+import 'components/fetch_categories.dart';
 
 class TextRecognition extends StatefulWidget {
   final AuthBase auth;
@@ -18,12 +19,11 @@ class TextRecognition extends StatefulWidget {
   State<TextRecognition> createState() => _TextRecognitionState();
 }
 
-List<String> dropdown_categories = <String>['Select Category'];
-
 class _TextRecognitionState extends State<TextRecognition> {
   bool textScanning = false;
+  List<String> dropdown_categories = [];
   String scannedText = "";
-  String dropdownValue = dropdown_categories.first;
+  String dropdownValue = 'Select Category';
   Map<int, String> categories = {};
 
   XFile? imageFile;
@@ -35,26 +35,33 @@ class _TextRecognitionState extends State<TextRecognition> {
     categories.remove(id);
   }
 
-  void addToCategoryChip() {
-    FirebaseFirestore.instance
-        .collection("category")
-        .doc(widget.auth.currentUser!.uid)
-        .get()
-        .then((value) {
-      int length = value["totalCategory"];
-      // print(length);
-      for (int i = 0; i < length; i++) {
-        // print(value["category"][i]);
-        dropdown_categories.add(value["category"][i]);
-      }
-      setState(() {});
-    });
+  // Future<List<String>> addToCategoryChip() async {
+  //   List<String> cats = <String>['Select Category'];
+  //   await FirebaseFirestore.instance
+  //       .collection("category")
+  //       .doc(widget.auth.currentUser!.uid)
+  //       .get()
+  //       .then((value) {
+  //     int length = value["totalCategory"];
+  //     print(length);
+  //     for (int i = 0; i < length; i++) {
+  //       print(value["category"][i]);
+  //       cats.add(value["category"][i]);
+  //     }
+  //   });
+  //   return cats;
+  // }
+
+  void fetchCategories() async {
+    dropdown_categories = await addToCategoryChip(widget.auth.currentUser!.uid);
+    dropdownValue = dropdown_categories.first;
+    setState(() {});
   }
 
   @override
   void initState() {
     super.initState();
-    addToCategoryChip();
+    fetchCategories();
   }
 
   @override
