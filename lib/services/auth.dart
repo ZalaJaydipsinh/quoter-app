@@ -33,7 +33,7 @@ class Auth implements AuthBase {
 
     dynamic userCredentails =
         await FirebaseAuth.instance.signInWithCredential(credential);
-
+    print("User sign inned...");
     UserQuoteDatabaseService(uid: currentUser!.uid).insertDummyUserData(
       currentUser!.displayName.toString(),
     );
